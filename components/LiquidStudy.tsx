@@ -185,7 +185,7 @@ export function LiquidStudy() {
               Liquid Implosion · 6 September 2026
             </p>
             <h1 className="mt-4 max-w-5xl font-serif text-4xl leading-[1.02] text-white sm:text-6xl">
-              How a cache bug could have enabled a 3,998.67 BTC payout
+              How a cache bug led to a 3,998.67 BTC payout
             </h1>
             <div className="mt-7 grid gap-5 lg:grid-cols-2 lg:gap-12">
               <p className="font-sans text-base leading-relaxed text-ink">
@@ -279,9 +279,14 @@ export function LiquidStudy() {
               </p>
             </div>
             <div>
-              <details className="border-y border-white/15">
-                <summary className="flex min-h-16 items-center justify-between font-serif text-lg text-white marker:text-accent">
-                  Sources and technical details
+              <details className="group border-y border-white/15">
+                <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-5 py-3 text-white transition-colors hover:text-accent [&::-webkit-details-marker]:hidden">
+                  <span className="font-serif text-lg">Sources and technical details</span>
+                  <span className="flex shrink-0 items-center gap-3 font-mono text-[9px] uppercase tracking-[0.14em]">
+                    <span className="group-open:hidden">Open</span>
+                    <span className="hidden group-open:inline">Close</span>
+                    <span className="flex size-8 items-center justify-center border border-accent/70 text-base leading-none transition-transform group-open:rotate-45 group-open:bg-accent group-open:text-canvas" aria-hidden="true">+</span>
+                  </span>
                 </summary>
                 <div className="pb-6">
                   {SOURCES.map((source) => (
