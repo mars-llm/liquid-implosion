@@ -4,11 +4,11 @@
 
 On 6 September 2026, Liquid split into two versions of its transaction history. Two peg-outs accepted on one side were later paid together in one Bitcoin transaction, sending 3,998.67 BTC from the federation wallet.
 
-This site brings the public transactions, Blockstream’s statements and the relevant Elements code into one short account. A five-step reconstruction shows how different records can become the same cache input when field boundaries are missing. It uses made-up bytes and the browser’s SHA-256 implementation; it does not replay the incident, validate a real range proof or create a transaction.
+The page links each claim to the public transactions, Blockstream’s statements or the relevant Elements code. A five-step reconstruction shows how different records can become the same cache input when field boundaries are missing. It uses fictional data and the browser’s SHA-256 implementation; it does not replay the incident, validate a real range proof or create a transaction.
 
-The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed. The site keeps those limits visible instead of filling the gaps with guesses.
+The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed.
 
-The status snapshot on the page was checked on 7 September 2026 at 17:21 CEST. This project is not affiliated with Blockstream, Liquid or SideSwap.
+The status snapshot on the page was checked on 7 September 2026 at 18:58 CEST. This project is not affiliated with Blockstream, Liquid or SideSwap.
 
 ## Local development
 

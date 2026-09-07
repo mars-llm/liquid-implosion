@@ -19,33 +19,33 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '7 September 2026, 17:21 CEST';
+const RESEARCH_CUTOFF = '7 September 2026, 18:58 CEST';
 const STEP_DELAY = 3600;
 
 const SEQUENCE = [
   {
     label: 'Normal peg',
-    title: 'Normally, both sides stay in balance.',
-    body: 'Liquid holds BTC in a federation wallet and issues the same amount as L-BTC. Before BTC can leave, the matching L-BTC must be removed from circulation.',
+    title: 'BTC in the federation wallet should match L-BTC in circulation.',
+    body: 'When someone withdraws BTC, the matching L-BTC must first be removed from circulation.',
   },
   {
     label: 'First transaction',
-    title: 'A proof is checked once.',
-    body: 'Liquid hides transaction amounts. A range proof lets a node confirm that a hidden amount is valid without revealing it. The node saves that answer in a cache.',
+    title: 'The first transaction passes its proof check.',
+    body: 'Liquid hides transaction amounts. A range proof lets a node check a hidden amount without seeing it. The node saves the successful result in a cache.',
   },
   {
     label: 'Missing boundaries',
-    title: 'Different records become the same byte string.',
-    body: 'The cache writes four fields back to back without marking their boundaries. Carefully chosen records can therefore feed it the same bytes even though their fields differ.',
+    title: 'Two different records produce the same cache input.',
+    body: 'The cache joins four fields without recording where one ends and the next begins. Moving those boundaries can turn different records into the same byte string.',
   },
   {
     label: 'Cache hit',
-    title: 'The cache finds an earlier match.',
-    body: 'The matching bytes also produce the same SHA-256 result. The code trusts the saved answer and skips checking the second proof.',
+    title: 'The second record reuses the first result.',
+    body: 'The same byte string has the same SHA-256 fingerprint. The cache reports success without checking the second proof.',
   },
   {
     label: 'Peg-out',
-    title: 'Two Liquid withdrawals are paid together.',
+    title: 'The federation pays two peg-outs together.',
     body: 'The two peg-outs total 3,998.67 BTC. Both appear as outputs in one Bitcoin transaction from the federation wallet.',
   },
 ] as const;
@@ -192,7 +192,7 @@ export function LiquidStudy() {
                 On 6 September 2026, Liquid split into two versions of its transaction history. One side accepted a disputed transaction. Two withdrawals from that side were later paid together in one Bitcoin transaction, sending 3,998.67 BTC from the federation wallet.
               </p>
               <p className="font-sans text-sm leading-relaxed text-ink-muted">
-                Those transactions are public. The Elements code also contains a cache bug that can explain why the network split. What we still lack are the exact software builds and cached data from the servers that signed the disputed chain.
+                Those transactions are public, and the relevant Elements code contains the cache flaw described below. The exact software builds and cached data from the servers that signed the disputed chain are not public.
               </p>
             </div>
             <NetworkSnapshot />
@@ -203,11 +203,11 @@ export function LiquidStudy() {
           <div className="mx-auto max-w-6xl">
             <div className="mb-8 grid gap-4 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
               <div>
-                <SectionLabel index="01">What the code allows</SectionLabel>
-                <h2 className="mt-5 font-serif text-3xl leading-tight text-white sm:text-5xl">How one saved answer can fit different data</h2>
+                <SectionLabel index="01">How the cache failed</SectionLabel>
+                <h2 className="mt-5 font-serif text-3xl leading-tight text-white sm:text-5xl">How the cache confused different records</h2>
               </div>
               <p className="max-w-2xl font-sans text-sm leading-relaxed text-ink-muted lg:justify-self-end">
-                This example uses made-up bytes and your browser’s SHA-256 function. It shows the encoding mistake, not the live transaction.
+                This reconstruction uses fictional data and the browser’s SHA-256 implementation. It demonstrates the cache-key error; it is not a replay of the incident.
               </p>
             </div>
             <AutomatedReconstruction
@@ -228,11 +228,11 @@ export function LiquidStudy() {
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
               <SectionLabel index="02">Status and guidance</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid remains paused.</h2>
+              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Blockstream still lists the incident as active.</h2>
             </div>
             <div className="border-t border-white/15">
-              <FactLine label="Network" text="Blockstream says it disabled the public bridge nodes. Liquid is not accepting new transactions." />
-              <FactLine label="Users" text="Wait for the official restart, then follow the instructions from your wallet, exchange or service." />
+              <FactLine label="Network" text="The incident page says Liquid is paused and its public bridge nodes are disabled." />
+              <FactLine label="Users" text="Check that page and your wallet, exchange or service before attempting a Liquid transaction." />
               <FactLine label="Scope" text="Blockstream says no authorization keys were compromised. The bug was in Liquid’s software; Bitcoin processed the signed payout under its normal rules." />
               <a
                 href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
@@ -240,7 +240,7 @@ export function LiquidStudy() {
                 rel="noreferrer"
                 className="mt-7 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-5 font-mono text-[10px] uppercase tracking-[0.14em] text-canvas transition-colors hover:bg-transparent hover:text-accent"
               >
-                Check official status <ExternalLink size={13} />
+                Open Blockstream status <ExternalLink size={13} />
               </a>
             </div>
           </div>
@@ -273,7 +273,7 @@ export function LiquidStudy() {
           <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
               <SectionLabel index="04">Sources and limits</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">What we can prove—and what we cannot</h2>
+              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Evidence and unanswered questions</h2>
               <p className="mt-5 max-w-lg font-sans text-sm leading-relaxed text-ink-muted">
                 The disputed transaction and Bitcoin payout are public, as is the relevant cache code. The exact software and cache contents on each Liquid server are not.
               </p>
@@ -303,9 +303,11 @@ export function LiquidStudy() {
                   ))}
                 </div>
               </details>
-              <p className="mt-6 border-l border-accent pl-5 font-sans text-sm leading-relaxed text-ink-muted">
-                Blockstream calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed. A PGP-signed message placed on Bitcoin says the bridge nodes were patched; the signature alone does not identify its sender. The latest Elements release still predates the 1 September cache change.
-              </p>
+              <div className="mt-6 space-y-3 border-l border-accent pl-5 font-sans text-sm leading-relaxed text-ink-muted">
+                <p>Blockstream calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed.</p>
+                <p>A PGP-signed message placed on Bitcoin says the bridge nodes were patched. The signature does not identify its sender.</p>
+                <p>The latest Elements release still predates the 1 September cache change.</p>
+              </div>
             </div>
           </div>
         </section>
@@ -392,11 +394,8 @@ function AutomatedReconstruction({
         </div>
       </div>
 
-      <div className="flex min-h-14 items-center justify-between gap-4 border-t border-white/15 px-3 sm:px-5">
-        <p className="hidden max-w-md font-sans text-[11px] leading-relaxed text-ink-muted sm:block">
-          Made-up bytes, real SHA-256. This does not replay the live transaction.
-        </p>
-        <div className="ml-auto flex items-center gap-2">
+      <div className="flex min-h-14 items-center justify-end gap-4 border-t border-white/15 px-3 sm:px-5">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onReplay}
@@ -490,7 +489,7 @@ function FirstCheck() {
         <span className="flex size-8 shrink-0 items-center justify-center border border-accent text-accent"><Check size={16} /></span>
         <div>
           <p className="font-serif text-lg text-white">Proof accepted</p>
-          <p className="mt-1 font-sans text-xs text-ink-muted">The node saves the result in its cache.</p>
+          <p className="mt-1 font-sans text-xs text-ink-muted">The node stores that answer in its cache.</p>
         </div>
       </div>
     </div>
@@ -505,7 +504,7 @@ function BoundaryShift() {
       <CacheRecordView label="Record A" record={VALID_RECORD} />
       <CacheRecordView label="Record B · different boundaries" record={SHIFTED_RECORD} />
       <div className="border-t border-white/15 pt-4">
-        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-accent">The same bytes enter SHA-256</p>
+        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-accent">The same bytes are sent to SHA-256</p>
         <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap border border-white/30 px-3 py-3 font-mono text-[9px] tracking-[0.08em] text-white">{bytes}</p>
       </div>
     </div>
@@ -526,7 +525,7 @@ function CacheHit({ fingerprint, match }: { fingerprint: string; match: boolean 
       </div>
       <div className="hairline-glow mt-7 border-l-2 border-accent bg-accent/[0.06] px-5 py-5">
         <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-accent">Cache hit</p>
-        <p className="mt-2 font-serif text-2xl text-white">The second proof is never checked.</p>
+        <p className="mt-2 font-serif text-2xl text-white">The second proof is skipped.</p>
       </div>
       <span className="sr-only">Full SHA-256 fingerprint: {fingerprint}</span>
     </div>
@@ -617,8 +616,8 @@ function NetworkSnapshot() {
         rel="noreferrer"
         className="border-b border-r border-white/10 px-3 py-3 hover:text-white lg:border-b-0"
       >
-        <span className="block">Official status</span>
-        <span className="mt-1 block text-[10px] text-accent">Active · Liquid paused</span>
+        <span className="block">Incident page</span>
+        <span className="mt-1 block text-[10px] text-accent">Active · says Liquid paused</span>
       </a>
       <a
         href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
@@ -627,10 +626,10 @@ function NetworkSnapshot() {
         className="border-b border-white/10 px-3 py-3 hover:text-white lg:border-b-0 lg:border-r"
       >
         <span className="block">Bridge nodes</span>
-        <span className="mt-1 block text-[10px] text-white">Disabled</span>
+        <span className="mt-1 block text-[10px] text-white">Incident page says disabled</span>
       </a>
       <div className="col-span-2 border-white/10 px-3 py-3 lg:col-span-1 lg:border-r">
-        <span className="block">Public explorer tips differ</span>
+        <span className="block">Public explorers show different latest blocks</span>
         <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] normal-case tracking-normal">
           <a href="https://blockstream.info/liquid/" target="_blank" rel="noreferrer" className="text-white hover:text-accent">Blockstream 4,051,232</a>
           <span className="text-accent">≠</span>
