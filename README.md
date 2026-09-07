@@ -38,3 +38,7 @@ The production build is a static export in `out/` and is configured for the `/li
 - [Elements pull request #1592](https://github.com/ElementsProject/elements/pull/1592)
 - [Liquid peg-out documentation](https://docs.liquid.net/docs/advanced-pegin-pegout)
 - [Independent forensic report](https://gist.github.com/1440000bytes/211ac92dd4433bb1a2e674bf0ff7db2e)
+
+## License
+
+[0BSD](LICENSE). You may use, copy, modify or distribute this project for any purpose, without attribution. The license includes warranty and liability disclaimers.
