@@ -2,9 +2,51 @@ import type { Metadata } from 'next';
 import { MotionProvider } from '../components/MotionProvider';
 import './globals.css';
 
+const SITE_URL = 'https://mars-llm.github.io/liquid-implosion/';
+const TITLE = 'Liquid Implosion | September 2026 Liquid cache bug';
+const DESCRIPTION = 'How a cache bug led to a 3,998.67 BTC payout from Liquid’s federation wallet, what the public evidence shows, and what remains unverified.';
+
 export const metadata: Metadata = {
-  title: 'Liquid incident | Cache bug and 3,998.67 BTC payout',
-  description: 'Public evidence, current network status and a visual explanation of the cache bug linked to the September 2026 Liquid incident.',
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: [
+    'Liquid Network',
+    'Elements',
+    'Bitcoin',
+    'cache bug',
+    'federation wallet',
+    'range proof',
+    'September 2026 Liquid incident',
+  ],
+  alternates: {
+    canonical: SITE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: 'website',
+    url: SITE_URL,
+    siteName: 'Liquid Implosion',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [
+      {
+        url: `${SITE_URL}social-card.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Liquid Implosion: the September 2026 Liquid cache bug and 3,998.67 BTC payout',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [`${SITE_URL}social-card.png`],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
