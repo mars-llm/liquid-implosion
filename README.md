@@ -8,7 +8,9 @@ The page links each claim to the public transactions, Blockstream’s statements
 
 The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed.
 
-The status snapshot on the page was checked on 7 September 2026 at 18:58 CEST. This project is not affiliated with Blockstream, Liquid or SideSwap.
+Blockstream still lists the incident as active and Liquid as paused. On 7 September, a confirmed transaction sent 3,400 BTC to the published federation return address. Roughly 598.5 BTC remained at the sender address when the page was checked at 19:36 CEST.
+
+This project is not affiliated with Blockstream, Liquid or SideSwap.
 
 ## Local development
 
@@ -33,6 +35,7 @@ The production build is a static export in `out/` and is configured for the `/li
 - [Blockstream incident status](https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228)
 - [Disputed Liquid transaction](https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f)
 - [Bitcoin federation payout](https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140)
+- [3,400 BTC return transaction](https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d)
 - [2019 cache implementation](https://github.com/ElementsProject/elements/commit/0b5066143dcdfc3ba7780d1a2c6f18c2c6fefd6a)
 - [2026 cache-key change](https://github.com/ElementsProject/elements/commit/c26d719c29a40da280a825b25657e9c3d8bc7d99)
 - [Elements pull request #1592](https://github.com/ElementsProject/elements/pull/1592)

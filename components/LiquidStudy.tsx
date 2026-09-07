@@ -19,7 +19,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '7 September 2026, 18:58 CEST';
+const RESEARCH_CUTOFF = '7 September 2026, 19:36 CEST';
 const STEP_DELAY = 3600;
 
 const SEQUENCE = [
@@ -75,6 +75,12 @@ const TIMELINE = [
     href: 'https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228',
     label: 'Official status',
   },
+  {
+    date: '7 September 2026',
+    title: 'A confirmed Bitcoin transaction sent 3,400 BTC to the published federation return address.',
+    href: 'https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d',
+    label: 'View transaction',
+  },
 ] as const;
 
 const SOURCES = [
@@ -86,6 +92,8 @@ const SOURCES = [
       ['Disputed Liquid transaction', 'https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f'],
       ['Bitcoin federation payout', 'https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140'],
       ['Signed bridge-node message', 'https://blockstream.info/tx/87dc0a20099a94c2caaa3fa93d1724cfe41b05ae5e0778cc0e8994b22e81120c'],
+      ['3,400 BTC return transaction', 'https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d'],
+      ['Reported withdrawal address', 'https://mempool.space/address/bc1ql4mfu6aundtkksxklfajs2h3t9nzcd6gyqjlte'],
     ],
   },
   {
@@ -228,10 +236,11 @@ export function LiquidStudy() {
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
               <SectionLabel index="02">Status and guidance</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Blockstream still lists the incident as active.</h2>
+              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused. Most of the BTC has been returned.</h2>
             </div>
             <div className="border-t border-white/15">
-              <FactLine label="Network" text="The incident page says Liquid is paused and its public bridge nodes are disabled." />
+              <FactLine label="Network" text="Blockstream still lists the incident as active, with Liquid paused and its public bridge nodes affected." />
+              <FactLine label="Funds" text="A confirmed transaction sent 3,400 BTC to the published federation return address. Roughly 598.5 BTC remains at the sender address." />
               <FactLine label="Users" text="Check that page and your wallet, exchange or service before attempting a Liquid transaction." />
               <FactLine label="Scope" text="Blockstream says no authorization keys were compromised. The bug was in Liquid’s software; Bitcoin processed the signed payout under its normal rules." />
               <a
@@ -256,7 +265,7 @@ export function LiquidStudy() {
               </div>
               <div className="border-t border-white/15">
                 {TIMELINE.map((item) => (
-                  <article key={item.date} className="grid gap-2 border-b border-white/10 py-5 sm:grid-cols-[10rem_1fr_auto] sm:items-center">
+                  <article key={`${item.date}-${item.title}`} className="grid gap-2 border-b border-white/10 py-5 sm:grid-cols-[10rem_1fr_auto] sm:items-center">
                     <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-accent">{item.date}</p>
                     <h3 className="font-serif text-lg text-white">{item.title}</h3>
                     <a href={item.href} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-ink-muted hover:text-white">
@@ -620,13 +629,13 @@ function NetworkSnapshot() {
         <span className="mt-1 block text-[10px] text-accent">Active · says Liquid paused</span>
       </a>
       <a
-        href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
+        href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d"
         target="_blank"
         rel="noreferrer"
         className="border-b border-white/10 px-3 py-3 hover:text-white lg:border-b-0 lg:border-r"
       >
-        <span className="block">Bridge nodes</span>
-        <span className="mt-1 block text-[10px] text-white">Incident page says disabled</span>
+        <span className="block">Returned on Bitcoin</span>
+        <span className="mt-1 block text-[10px] text-white">3,400 BTC confirmed</span>
       </a>
       <div className="col-span-2 border-white/10 px-3 py-3 lg:col-span-1 lg:border-r">
         <span className="block">Public explorers show different latest blocks</span>
