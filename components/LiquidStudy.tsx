@@ -19,7 +19,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '7 September 2026, 19:36 CEST';
+const RESEARCH_CUTOFF = '8 September 2026, 10:32 CEST';
 const STEP_DELAY = 3600;
 
 const SEQUENCE = [
@@ -81,6 +81,12 @@ const TIMELINE = [
     href: 'https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d',
     label: 'View transaction',
   },
+  {
+    date: '8 September 2026',
+    title: 'Blockstream said updated software had been deployed and a coordinated restart was being prepared.',
+    href: 'https://x.com/Blockstream/status/2097127976672342487',
+    label: 'Blockstream update',
+  },
 ] as const;
 
 const SOURCES = [
@@ -89,6 +95,7 @@ const SOURCES = [
     links: [
       ['Liquid statement', 'https://x.com/Liquid_BTC/status/2096696272447218108'],
       ['Blockstream incident status', 'https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228'],
+      ['Blockstream restart update', 'https://x.com/Blockstream/status/2097127976672342487'],
       ['Disputed Liquid transaction', 'https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f'],
       ['Bitcoin federation payout', 'https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140'],
       ['Signed bridge-node message', 'https://blockstream.info/tx/87dc0a20099a94c2caaa3fa93d1724cfe41b05ae5e0778cc0e8994b22e81120c'],
@@ -236,10 +243,10 @@ export function LiquidStudy() {
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
               <SectionLabel index="02">Status and guidance</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused. Most of the BTC has been returned.</h2>
+              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused while the federation prepares a restart.</h2>
             </div>
             <div className="border-t border-white/15">
-              <FactLine label="Network" text="Blockstream still lists the incident as active, with Liquid paused and its public bridge nodes affected." />
+              <FactLine label="Network" text="Blockstream still lists the incident as active. On 8 September, it said updated software had been deployed and a coordinated restart was being prepared." />
               <FactLine label="Funds" text="A confirmed transaction sent 3,400 BTC to the published federation return address. Roughly 598.5 BTC remains at the sender address." />
               <FactLine label="Users" text="Check that page and your wallet, exchange or service before attempting a Liquid transaction." />
               <FactLine label="Scope" text="Blockstream says no authorization keys were compromised. The bug was in Liquid’s software; Bitcoin processed the signed payout under its normal rules." />
@@ -315,7 +322,7 @@ export function LiquidStudy() {
               <div className="mt-6 space-y-3 border-l border-accent pl-5 font-sans text-sm leading-relaxed text-ink-muted">
                 <p>Blockstream calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed.</p>
                 <p>A PGP-signed message placed on Bitcoin says the bridge nodes were patched. The signature does not identify its sender.</p>
-                <p>The latest Elements release still predates the 1 September cache change.</p>
+                <p>The latest public Elements release still predates the 1 September cache change. Blockstream did not identify the deployed build in its update.</p>
               </div>
             </div>
           </div>
