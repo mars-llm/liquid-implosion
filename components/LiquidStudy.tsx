@@ -18,7 +18,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '9 September 2026, 09:42 CEST';
+const RESEARCH_CUTOFF = '9 September 2026, 12:02 CEST';
 const STEP_DELAY = 8000;
 
 const SEQUENCE = [
@@ -234,7 +234,7 @@ export function LiquidStudy() {
                 <h2 className="mt-5 font-serif text-3xl leading-tight text-white sm:text-5xl">How the cache confused different records</h2>
               </div>
               <p className="max-w-2xl font-sans text-sm leading-relaxed text-ink-muted lg:justify-self-end">
-                This four-step explanation uses fictional data and the browser’s SHA-256 implementation. It demonstrates the cache-key error; it does not validate a real proof or replay the incident.
+                The four steps below use shorter example records to show the cache mistake: different fields become the same bytes once their boundaries are removed.
               </p>
             </div>
             <CacheWalkthrough
@@ -250,7 +250,7 @@ export function LiquidStudy() {
               onSelectStage={selectStage}
             />
             <div className="mt-10 border-t border-accent/40 pt-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">Documented incident outcome · not simulated above</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">What happened on Liquid</p>
               <h3 className="mt-3 font-serif text-2xl text-white">Two Liquid withdrawals were paid in one Bitcoin transaction.</h3>
               <p className="mt-3 max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
                 The <SourceLink href="https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140">federation payout transaction</SourceLink> contains both outputs, totaling 3,998.67 BTC. The transactions and cache code are public; the exact software and cached data on every server that signed the disputed chain are not.
@@ -265,7 +265,7 @@ export function LiquidStudy() {
               <div>
                 <SectionLabel index="03">Timeline</SectionLabel>
                 <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Code history and incident events</h2>
-                <p className="mt-5 font-sans text-sm leading-relaxed text-ink-muted">Code changes come first, followed by the disputed block, the pause, the return transaction and public updates. A merged patch does not establish which servers ran it.</p>
+                <p className="mt-5 font-sans text-sm leading-relaxed text-ink-muted">The vulnerable code is public. The software version running on each federation server has not been published.</p>
               </div>
               <div className="border-t border-white/15">
                 {TIMELINE.map((item) => (
@@ -285,8 +285,8 @@ export function LiquidStudy() {
         <section id="sources" className="scroll-mt-14 px-4 py-14 md:px-8 md:py-20">
           <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
-              <SectionLabel index="04">Sources and limits</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Evidence and unanswered questions</h2>
+              <SectionLabel index="04">Sources</SectionLabel>
+              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">What the public record shows</h2>
               <p className="mt-5 max-w-lg font-sans text-sm leading-relaxed text-ink-muted">
                 The disputed transaction and Bitcoin payout are public, as is the relevant cache code. The exact software and cache contents on each Liquid server are not.
               </p>
@@ -470,7 +470,7 @@ function BalancedPeg() {
         </div>
         <MarkerSet label="L-BTC" />
       </div>
-      <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Illustrative units, not actual reserve balances.</p>
+      <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Eight squares stand in for the reserve and supply.</p>
     </div>
   );
 }
@@ -512,7 +512,7 @@ function BoundaryShift() {
       <FieldLegend />
       <CacheRecordView label="Record A" record={VALID_RECORD} />
       <CacheRecordView label="Record B · different boundaries" record={SHIFTED_RECORD} />
-      <p className="font-sans text-xs leading-relaxed text-ink-muted">Read down: each byte stays in the same column. Only the field boundaries move. Widths show this example’s byte counts, not real proof sizes.</p>
+      <p className="font-sans text-xs leading-relaxed text-ink-muted">Read down: every byte stays in place. Only the field boundaries move. The real proofs are longer, but the mistake is the same.</p>
       <div className="border-t border-white/15 pt-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-accent">Boundaries discarded → same cache input</p>
         <div className="mt-2 grid grid-cols-12 border-y border-white/30 py-3 font-mono text-[11px] text-white">
@@ -637,7 +637,7 @@ function CurrentGuidance() {
         <div>
           <SectionLabel index="01">Status and guidance</SectionLabel>
           <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused.</h2>
-          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Status checked {RESEARCH_CUTOFF}. This page is a dated snapshot, not a live monitor.</p>
+          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Checked {RESEARCH_CUTOFF}. Use Blockstream&apos;s incident page for the latest operational status.</p>
           <a href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-4 font-sans text-sm text-canvas transition-colors hover:bg-transparent hover:text-accent">
             Check Blockstream status <ExternalLink size={13} />
           </a>
@@ -646,7 +646,7 @@ function CurrentGuidance() {
           <FactLine label="Users"><SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">Liquid says</SourceLink> users do not need to take proactive steps. Check the incident page and your service before trying a transaction.</FactLine>
           <FactLine label="Network"><SourceLink href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228">Blockstream</SourceLink> still lists the incident as active. The two public explorers show different accepted chain histories.</FactLine>
           <FactLine label="Funds">A <SourceLink href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d">confirmed transaction</SourceLink> returned 3,400 BTC to the published federation address. Roughly 598.5 BTC remained at the <SourceLink href="https://mempool.space/address/bc1ql4mfu6aundtkksxklfajs2h3t9nzcd6gyqjlte">sender address</SourceLink> at the check above.</FactLine>
-          <FactLine label="Software"><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> was published on 9 September as an emergency pre-release. It hardens the proof caches; its publication is not a restart notice.</FactLine>
+          <FactLine label="Software"><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> hardens the proof caches. Blockstream&apos;s status page—not the software release—shows whether Liquid has resumed.</FactLine>
         </div>
       </div>
     </section>

@@ -4,11 +4,11 @@
 
 Liquid’s incident report says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The SideSwap peg-out route then released 3,998.67 BTC from the federation wallet. Public explorers split at the disputed block on 6 September 2026.
 
-The page links each claim to the public transactions, Blockstream’s statements or the relevant Elements code. A four-step walkthrough shows how different records can become the same cache input when field boundaries are missing. It starts paused, with Previous, Next and optional Play controls. The example uses fictional data and the browser’s SHA-256 implementation; it does not replay the incident, validate a real range proof or create a transaction. The documented payout is shown separately.
+The page links each claim to the public transactions, Blockstream’s statements or the relevant Elements code. A four-step walkthrough shows how different records can become the same cache input when field boundaries are missing. The real payout is shown separately.
 
 The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed.
 
-Blockstream still lists the incident as active and Liquid as paused. Elements 23.3.4 was published on 9 September as an emergency pre-release with hardened proof-cache keys; that release is not a restart notice. A confirmed transaction sent 3,400 BTC to the published federation return address, and roughly 598.5 BTC remained at the sender address when the page was checked at 09:42 CEST.
+Blockstream still lists the incident as active and Liquid as paused. Elements 23.3.4 was published on 9 September as an emergency pre-release with hardened proof-cache keys. A confirmed transaction sent 3,400 BTC to the published federation return address, and roughly 598.5 BTC remained at the sender address when the page was checked at 12:02 CEST.
 
 This project is not affiliated with Blockstream, Liquid or SideSwap.
 
