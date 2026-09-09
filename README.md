@@ -4,7 +4,7 @@
 
 Liquid’s incident report says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The SideSwap peg-out route then released 3,998.67 BTC from the federation wallet. Public explorers split at the disputed block on 6 September 2026.
 
-The page links each claim to the public transactions, Blockstream’s statements or the relevant Elements code. A five-step reconstruction shows how different records can become the same cache input when field boundaries are missing. It uses fictional data and the browser’s SHA-256 implementation; it does not replay the incident, validate a real range proof or create a transaction.
+The page links each claim to the public transactions, Blockstream’s statements or the relevant Elements code. A four-step walkthrough shows how different records can become the same cache input when field boundaries are missing. It starts paused, with Previous, Next and optional Play controls. The example uses fictional data and the browser’s SHA-256 implementation; it does not replay the incident, validate a real range proof or create a transaction. The documented payout is shown separately.
 
 The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed.
 

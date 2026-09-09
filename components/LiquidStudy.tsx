@@ -9,7 +9,6 @@ import {
   ExternalLink,
   Pause,
   Play,
-  RotateCcw,
 } from 'lucide-react';
 import {
   SHIFTED_RECORD,
@@ -20,7 +19,7 @@ import {
 } from '../lib/model';
 
 const RESEARCH_CUTOFF = '9 September 2026, 09:42 CEST';
-const STEP_DELAY = 3600;
+const STEP_DELAY = 8000;
 
 const SEQUENCE = [
   {
@@ -41,12 +40,7 @@ const SEQUENCE = [
   {
     label: 'Cache hit',
     title: 'The second record reuses the first result.',
-    body: 'The same byte string has the same SHA-256 fingerprint. The cache reports success without checking the second proof.',
-  },
-  {
-    label: 'Peg-out',
-    title: 'The federation pays two peg-outs together.',
-    body: 'The two peg-outs total 3,998.67 BTC. Both appear as outputs in one Bitcoin transaction from the federation wallet.',
+    body: 'The same byte string has the same SHA-256 fingerprint. The cache reports success without checking the second proof. Equal cache input is not a SHA-256 collision.',
   },
 ] as const;
 
@@ -58,14 +52,14 @@ const TIMELINE = [
     label: 'Original code',
   },
   {
-    date: '3 August–1 September 2026',
-    title: 'A patch added those inputs, but joined four fields without recording their lengths.',
-    href: 'https://github.com/ElementsProject/elements/commit/c26d719c29a40da280a825b25657e9c3d8bc7d99',
-    label: 'Cache change',
+    date: '1 September 2026 · merged',
+    title: 'PR #1592 merged a patch adding those inputs, but joining four fields without recording their lengths. This is a source-code date, not a confirmed deployment date.',
+    href: 'https://github.com/ElementsProject/elements/pull/1592',
+    label: 'Merged change',
   },
   {
     date: '6 September 2026',
-    title: 'Liquid explorers split at a disputed block. Two peg-outs followed on one side.',
+    title: 'Liquid explorers disagreed over the accepted chain at block 4,050,336. Two peg-outs followed on one side.',
     href: 'https://blockstream.info/liquid/block/e1d9a2aae69e0fc3ca18f7f7f84e0615e92a5e3b5000d66c10c34043346da0d5',
     label: 'View block',
   },
@@ -134,8 +128,7 @@ const SOURCES = [
 export function LiquidStudy() {
   const shouldReduceMotion = useReducedMotion();
   const [stage, setStage] = useState(0);
-  const [playing, setPlaying] = useState(true);
-  const [run, setRun] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const [validFingerprint, setValidFingerprint] = useState('');
   const [shiftedFingerprint, setShiftedFingerprint] = useState('');
 
@@ -157,28 +150,31 @@ export function LiquidStudy() {
   }, []);
 
   useEffect(() => {
-    if (shouldReduceMotion || !playing) return;
+    if (!playing) return;
 
     const timer = window.setTimeout(() => {
-      setStage((current) => (current + 1) % SEQUENCE.length);
+      if (stage === SEQUENCE.length - 1) {
+        setPlaying(false);
+      } else {
+        setStage((current) => current + 1);
+      }
     }, STEP_DELAY);
 
     return () => window.clearTimeout(timer);
-  }, [playing, run, shouldReduceMotion, stage]);
+  }, [playing, stage]);
 
   const fingerprintsMatch = useMemo(
     () => Boolean(validFingerprint) && validFingerprint === shiftedFingerprint,
     [shiftedFingerprint, validFingerprint],
   );
 
-  const replay = () => {
-    setStage(0);
-    setPlaying(!shouldReduceMotion);
-    setRun((current) => current + 1);
+  const selectStage = (next: number) => {
+    setStage(Math.max(0, Math.min(SEQUENCE.length - 1, next)));
+    setPlaying(false);
   };
 
   return (
-    <div id="top" className="min-h-[100dvh] overflow-hidden bg-canvas text-ink">
+    <div id="top" className="min-h-[100dvh] overflow-x-clip bg-canvas text-ink">
       <header className="sticky top-0 z-50 grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-white/10 bg-canvas/95 px-4 backdrop-blur-sm sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:px-8">
         <a
           href="https://mars-llm.github.io/hal-finney-trading-algorithms/"
@@ -200,7 +196,7 @@ export function LiquidStudy() {
         <section id="summary" className="relative scroll-mt-14 border-b border-white/10 px-4 py-10 md:px-8 md:py-14">
           <div className="fault-grid pointer-events-none absolute inset-0" aria-hidden="true" />
           <motion.div
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.4 }}
             className="relative mx-auto max-w-6xl"
@@ -213,60 +209,52 @@ export function LiquidStudy() {
             </h1>
             <div className="mt-7 grid gap-5 lg:grid-cols-2 lg:gap-12">
               <p className="font-sans text-base leading-relaxed text-ink">
-                Liquid&apos;s incident report says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The SideSwap peg-out route then released 3,998.67 BTC from the federation wallet.
+                <SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">Liquid&apos;s incident report</SourceLink> says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The SideSwap peg-out route then released 3,998.67 BTC from the federation wallet.
               </p>
               <p className="font-sans text-sm leading-relaxed text-ink-muted">
-                The explorers split at the disputed block on 6 September. The transactions and cache code are public; the exact software and cached data on every server that signed the disputed chain are not.
+                Liquid is a Bitcoin-linked network: its L-BTC is meant to match BTC held by its operators, the federation, one-for-one. A peg-out withdraws BTC by removing the matching L-BTC from circulation.
               </p>
             </div>
             <NetworkSnapshot />
+            <nav aria-label="On this page" className="mt-5 flex flex-wrap gap-x-6 gap-y-1 font-sans text-sm text-ink-muted">
+              {[['summary', 'Overview'], ['guidance', 'Status'], ['mechanism', 'Cache flaw'], ['timeline', 'Timeline'], ['sources', 'Sources']].map(([id, label]) => (
+                <a key={id} href={`#${id}`} className="inline-flex min-h-11 items-center underline decoration-white/20 underline-offset-4 hover:text-accent">{label}</a>
+              ))}
+            </nav>
           </motion.div>
         </section>
+
+        <CurrentGuidance />
 
         <section id="mechanism" className="scroll-mt-14 border-b border-white/10 bg-panel px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="mb-8 grid gap-4 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
               <div>
-                <SectionLabel index="01">How the cache failed</SectionLabel>
+                <SectionLabel index="02">How the cache failed</SectionLabel>
                 <h2 className="mt-5 font-serif text-3xl leading-tight text-white sm:text-5xl">How the cache confused different records</h2>
               </div>
               <p className="max-w-2xl font-sans text-sm leading-relaxed text-ink-muted lg:justify-self-end">
-                This reconstruction uses fictional data and the browser’s SHA-256 implementation. It demonstrates the cache-key error; it is not a replay of the incident.
+                This four-step explanation uses fictional data and the browser’s SHA-256 implementation. It demonstrates the cache-key error; it does not validate a real proof or replay the incident.
               </p>
             </div>
-            <AutomatedReconstruction
+            <CacheWalkthrough
               stage={stage}
-              run={run}
               playing={playing}
               reducedMotion={Boolean(shouldReduceMotion)}
               fingerprintsMatch={fingerprintsMatch}
               fingerprint={validFingerprint}
-              onTogglePlaying={() => setPlaying((current) => !current)}
-              onReplay={replay}
-              onAdvance={() => setStage((current) => (current + 1) % SEQUENCE.length)}
+              onTogglePlaying={() => {
+                if (!playing && stage === SEQUENCE.length - 1) setStage(0);
+                setPlaying((current) => !current);
+              }}
+              onSelectStage={selectStage}
             />
-          </div>
-        </section>
-
-        <section id="guidance" className="scroll-mt-14 border-b border-accent/50 bg-accent/[0.06] px-4 py-12 md:px-8 md:py-16">
-          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
-            <div>
-              <SectionLabel index="02">Status and guidance</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused. The emergency release is public.</h2>
-            </div>
-            <div className="border-t border-white/15">
-              <FactLine label="Network" text="Blockstream still lists the incident as active. The two public explorers still disagree, and neither tip has moved since the previous check." />
-              <FactLine label="Software" text="Elements 23.3.4 was published on 9 September as a pre-release. It hardens the proof caches; its publication is not a restart notice." />
-              <FactLine label="Funds" text="A confirmed transaction sent 3,400 BTC to the published federation return address. Roughly 598.5 BTC remains at the sender address." />
-              <FactLine label="Users" text="Liquid says users do not need to take proactive steps. Check the incident page and your service before trying a transaction." />
-              <a
-                href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-7 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-5 font-mono text-[10px] uppercase tracking-[0.14em] text-canvas transition-colors hover:bg-transparent hover:text-accent"
-              >
-                Open Blockstream status <ExternalLink size={13} />
-              </a>
+            <div className="mt-10 border-t border-accent/40 pt-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">Documented incident outcome · not simulated above</p>
+              <h3 className="mt-3 font-serif text-2xl text-white">Two Liquid withdrawals were paid in one Bitcoin transaction.</h3>
+              <p className="mt-3 max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
+                The <SourceLink href="https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140">federation payout transaction</SourceLink> contains both outputs, totaling 3,998.67 BTC. The transactions and cache code are public; the exact software and cached data on every server that signed the disputed chain are not.
+              </p>
             </div>
           </div>
         </section>
@@ -276,8 +264,8 @@ export function LiquidStudy() {
             <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
               <div>
                 <SectionLabel index="03">Timeline</SectionLabel>
-                <p className="number-outline mt-6 font-serif text-[5rem] leading-none sm:text-[7rem]">3,998.67</p>
-                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white">BTC paid for two Liquid peg-outs</p>
+                <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Code history and incident events</h2>
+                <p className="mt-5 font-sans text-sm leading-relaxed text-ink-muted">Code changes come first, followed by the disputed block, the pause, the return transaction and public updates. A merged patch does not establish which servers ran it.</p>
               </div>
               <div className="border-t border-white/15">
                 {TIMELINE.map((item) => (
@@ -314,6 +302,12 @@ export function LiquidStudy() {
                   </span>
                 </summary>
                 <div className="pb-6">
+                  <div className="border-t border-white/10 py-5 font-sans text-sm leading-relaxed text-ink-muted">
+                    <p><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and adds an option to bypass the range-proof cache.</p>
+                    <p className="mt-3">Explorer snapshot at {RESEARCH_CUTOFF}: <SourceLink href="https://blockstream.info/liquid/">Blockstream 4,051,232</SourceLink>; <SourceLink href="https://liquid.network/liquid/">liquid.network 4,050,335</SourceLink>. Neither tip had moved since the previous check.</p>
+                    <p className="mt-3">The demonstration hashes its bytes with the same fixed educational salt for both records. Full SHA-256 fingerprint:</p>
+                    <code className="mt-2 block break-all text-xs text-ink">{validFingerprint || 'Calculating…'}</code>
+                  </div>
                   {SOURCES.map((source) => (
                     <div key={source.group} className="border-t border-white/10 py-5">
                       <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">{source.group}</p>
@@ -329,10 +323,9 @@ export function LiquidStudy() {
                 </div>
               </details>
               <div className="mt-6 space-y-3 border-l border-accent pl-5 font-sans text-sm leading-relaxed text-ink-muted">
-                <p>Blockstream calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed.</p>
-                <p>A PGP-signed message placed on Bitcoin says the bridge nodes were patched. The signature does not identify its sender.</p>
-                <p>Elements 23.3.4 is public as a pre-release. Its fix records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and adds an option to bypass the range-proof cache.</p>
-                <p>The incident report gives 15:53:10 UTC for block 4,050,336. The block explorer records 13:53:10 UTC, so this page uses the block height and does not treat either time as settled.</p>
+                <p><SourceLink href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228">Blockstream</SourceLink> calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed.</p>
+                <p>A <SourceLink href="https://blockstream.info/tx/87dc0a20099a94c2caaa3fa93d1724cfe41b05ae5e0778cc0e8994b22e81120c">PGP-signed message placed on Bitcoin</SourceLink> says the bridge nodes were patched. The signature does not identify its sender.</p>
+                <p>The <SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">incident report</SourceLink> gives 15:53:10 UTC for block 4,050,336. The <SourceLink href="https://blockstream.info/liquid/block/e1d9a2aae69e0fc3ca18f7f7f84e0615e92a5e3b5000d66c10c34043346da0d5">block explorer</SourceLink> records 13:53:10 UTC, so this page uses the block height and does not treat either time as settled.</p>
               </div>
             </div>
           </div>
@@ -357,39 +350,54 @@ export function LiquidStudy() {
   );
 }
 
-function AutomatedReconstruction({
+function CacheWalkthrough({
   fingerprint,
   fingerprintsMatch,
-  onAdvance,
-  onReplay,
+  onSelectStage,
   onTogglePlaying,
   playing,
   reducedMotion,
-  run,
   stage,
 }: {
   fingerprint: string;
   fingerprintsMatch: boolean;
-  onAdvance: () => void;
-  onReplay: () => void;
+  onSelectStage: (stage: number) => void;
   onTogglePlaying: () => void;
   playing: boolean;
   reducedMotion: boolean;
-  run: number;
   stage: number;
 }) {
   const current = SEQUENCE[stage];
 
   return (
     <div className="border-y border-white/20 bg-canvas/80">
-      <div className="flex items-center justify-between gap-4 border-b border-white/15 px-4 py-3 sm:px-6">
-        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">Five steps</p>
-        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-ink-muted">{stage + 1} / {SEQUENCE.length}</p>
+      <div className="sticky top-14 z-20 border-b border-white/15 bg-canvas px-2 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-accent">Illustration · {stage + 1} / {SEQUENCE.length}</p>
+          <button type="button" onClick={onTogglePlaying} aria-pressed={playing} className="inline-flex min-h-11 items-center gap-2 px-3 font-sans text-sm text-white hover:text-accent">
+            {playing ? <Pause size={14} /> : <Play size={14} />}{playing ? 'Pause' : 'Play'}
+          </button>
+        </div>
+        <div className="flex items-center justify-between gap-2">
+          <button type="button" onClick={() => onSelectStage(stage - 1)} disabled={stage === 0} className="inline-flex min-h-11 items-center gap-1 px-2 font-sans text-sm text-white hover:text-accent disabled:cursor-default disabled:opacity-30">
+            <ArrowLeft size={14} />Previous
+          </button>
+          <div className="flex" aria-label="Walkthrough steps">
+            {SEQUENCE.map((step, index) => (
+              <button key={step.label} type="button" aria-label={`Step ${index + 1}: ${step.label}`} aria-current={stage === index ? 'step' : undefined} onClick={() => onSelectStage(index)} className={`flex min-h-11 min-w-6 items-center justify-center border-b-2 font-mono text-xs sm:min-w-11 ${stage === index ? 'border-accent text-accent' : 'border-transparent text-ink-muted hover:text-white'}`}>
+                {index + 1}
+              </button>
+            ))}
+          </div>
+          <button type="button" onClick={() => onSelectStage(stage + 1)} disabled={stage === SEQUENCE.length - 1} className="inline-flex min-h-11 items-center gap-1 px-2 font-sans text-sm text-white hover:text-accent disabled:cursor-default disabled:opacity-30">
+            Next<ArrowRight size={14} />
+          </button>
+        </div>
       </div>
 
       <div className="h-0.5 bg-white/10" aria-hidden="true">
         <motion.div
-          key={`${run}-${stage}-${playing}`}
+          key={`${stage}-${playing}`}
           className="h-full bg-accent"
           initial={{ width: `${(stage / SEQUENCE.length) * 100}%` }}
           animate={{ width: `${((stage + 1) / SEQUENCE.length) * 100}%` }}
@@ -397,20 +405,20 @@ function AutomatedReconstruction({
         />
       </div>
 
-      <div className="grid min-h-[29rem] sm:min-h-[27rem] sm:grid-cols-[0.78fr_1.22fr]">
+      <div className="grid sm:min-h-[27rem] lg:grid-cols-[0.78fr_1.22fr]" aria-live={playing ? 'off' : 'polite'} aria-atomic="true">
         <motion.div
           key={current.label}
-          initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+          initial={stage === 0 || reducedMotion ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reducedMotion ? 0 : 0.28 }}
-          className="border-b border-white/10 p-5 sm:border-b-0 sm:border-r sm:p-6"
+          className="border-b border-white/10 p-4 sm:p-6 lg:border-b-0 lg:border-r"
         >
           <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">{current.label}</p>
-          <h2 className="mt-4 font-serif text-2xl leading-tight text-white sm:text-3xl">{current.title}</h2>
+          <h3 className="mt-4 font-serif text-2xl leading-tight text-white sm:text-3xl">{current.title}</h3>
           <p className="mt-4 font-sans text-sm leading-relaxed text-ink-muted">{current.body}</p>
         </motion.div>
 
-        <div className="flex min-h-72 items-center p-5 sm:p-7">
+        <div className="flex min-h-64 min-w-0 items-center p-3 sm:p-7">
           <ReconstructionScene
             stage={stage}
             fingerprint={fingerprint}
@@ -420,35 +428,6 @@ function AutomatedReconstruction({
         </div>
       </div>
 
-      <div className="flex min-h-14 items-center justify-end gap-4 border-t border-white/15 px-3 sm:px-5">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onReplay}
-            className="inline-flex min-h-11 items-center gap-2 px-3 font-mono text-[9px] uppercase tracking-[0.12em] text-ink-muted hover:text-white"
-          >
-            <RotateCcw size={13} /> Replay
-          </button>
-          {reducedMotion ? (
-            <button
-              type="button"
-              onClick={onAdvance}
-              className="inline-flex min-h-11 items-center gap-2 border border-white/20 px-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white hover:border-accent hover:text-accent"
-            >
-              Next <ArrowRight size={13} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onTogglePlaying}
-              className="inline-flex min-h-11 items-center gap-2 border border-white/20 px-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white hover:border-accent hover:text-accent"
-            >
-              {playing ? <Pause size={13} /> : <Play size={13} />}
-              {playing ? 'Pause' : 'Continue'}
-            </button>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
@@ -467,7 +446,7 @@ function ReconstructionScene({
   return (
     <motion.div
       key={stage}
-      initial={reducedMotion ? false : { opacity: 0, x: 10 }}
+      initial={stage === 0 || reducedMotion ? false : { opacity: 0, x: 10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: reducedMotion ? 0 : 0.35 }}
       className="w-full"
@@ -476,20 +455,22 @@ function ReconstructionScene({
       {stage === 1 && <FirstCheck />}
       {stage === 2 && <BoundaryShift />}
       {stage === 3 && <CacheHit fingerprint={fingerprint} match={fingerprintsMatch} />}
-      {stage === 4 && <ReservePayout reducedMotion={reducedMotion} />}
     </motion.div>
   );
 }
 
 function BalancedPeg() {
   return (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-      <MarkerSet label="BTC reserve" filled />
-      <div className="text-center">
-        <div className="h-px w-8 bg-accent sm:w-12" />
-        <p className="mt-3 font-mono text-[8px] uppercase tracking-[0.12em] text-accent">1 : 1</p>
+    <div>
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <MarkerSet label="BTC reserve" filled />
+        <div className="text-center">
+          <div className="h-px w-8 bg-accent sm:w-12" />
+          <p className="mt-3 font-mono text-xs text-accent">1 : 1</p>
+        </div>
+        <MarkerSet label="L-BTC" />
       </div>
-      <MarkerSet label="L-BTC" />
+      <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Illustrative units, not actual reserve balances.</p>
     </div>
   );
 }
@@ -510,6 +491,7 @@ function MarkerSet({ filled = false, label }: { filled?: boolean; label: string 
 function FirstCheck() {
   return (
     <div>
+      <FieldLegend />
       <CacheRecordView label="Record A" record={VALID_RECORD} />
       <div className="mt-6 flex items-center gap-3 border-l-2 border-accent bg-accent/[0.06] px-4 py-4">
         <span className="flex size-8 shrink-0 items-center justify-center border border-accent text-accent"><Check size={16} /></span>
@@ -523,15 +505,19 @@ function FirstCheck() {
 }
 
 function BoundaryShift() {
-  const bytes = serializeCacheRecord(VALID_RECORD).join(' ');
+  const bytes = serializeCacheRecord(VALID_RECORD);
 
   return (
     <div className="space-y-5">
+      <FieldLegend />
       <CacheRecordView label="Record A" record={VALID_RECORD} />
       <CacheRecordView label="Record B · different boundaries" record={SHIFTED_RECORD} />
+      <p className="font-sans text-xs leading-relaxed text-ink-muted">Read down: each byte stays in the same column. Only the field boundaries move. Widths show this example’s byte counts, not real proof sizes.</p>
       <div className="border-t border-white/15 pt-4">
-        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-accent">The same bytes are sent to SHA-256</p>
-        <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap border border-white/30 px-3 py-3 font-mono text-[9px] tracking-[0.08em] text-white">{bytes}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-accent">Boundaries discarded → same cache input</p>
+        <div className="mt-2 grid grid-cols-12 border-y border-white/30 py-3 font-mono text-[11px] text-white">
+          {bytes.map((byte, index) => <span key={index} className="text-center">{byte}</span>)}
+        </div>
       </div>
     </div>
   );
@@ -553,34 +539,6 @@ function CacheHit({ fingerprint, match }: { fingerprint: string; match: boolean 
         <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-accent">Cache hit</p>
         <p className="mt-2 font-serif text-2xl text-white">The second proof is skipped.</p>
       </div>
-      <span className="sr-only">Full SHA-256 fingerprint: {fingerprint}</span>
-    </div>
-  );
-}
-
-function ReservePayout({ reducedMotion }: { reducedMotion: boolean }) {
-  return (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-      <div>
-        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-ink-muted">Federation reserve</p>
-        <div className="mt-4 grid grid-cols-4 gap-2">
-          {Array.from({ length: 16 }, (_, index) => (
-            <motion.span
-              key={index}
-              className="aspect-square border border-white/35 bg-white/75"
-              initial={{ opacity: 1, x: 0 }}
-              animate={{ opacity: index < 14 ? 0.08 : 0.85, x: index < 14 ? 12 : 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.55, delay: reducedMotion ? 0 : index * 0.025 }}
-            />
-          ))}
-        </div>
-      </div>
-      <ArrowRight size={22} className="text-accent" aria-hidden="true" />
-      <div>
-        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-ink-muted">Bitcoin payout</p>
-        <p className="mt-3 font-serif text-3xl leading-none text-white sm:text-4xl">3,998.67</p>
-        <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em] text-accent">BTC</p>
-      </div>
     </div>
   );
 }
@@ -595,22 +553,33 @@ const SEGMENTS = [
 function CacheRecordView({ label, record }: { label: string; record: CacheRecord }) {
   return (
     <div>
-      <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-ink-muted">{label}</p>
-      <div className="mt-2 flex gap-1 overflow-hidden">
-        {SEGMENTS.map(([key, segmentLabel, color]) => {
+      <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted">{label}</p>
+      <div className="mt-2 grid grid-cols-12">
+        {SEGMENTS.map(([key, segmentLabel, color], fieldIndex) => {
           const bytes = record[key];
           return (
             <div
               key={key}
-              className={`min-w-0 border py-3 ${color}`}
-              style={{ flexGrow: bytes.length, flexBasis: 0 }}
+              className={`min-w-0 border-y border-l-2 py-2 last:border-r ${color}`}
+              style={{ gridColumn: `span ${bytes.length}` }}
+              aria-label={`${segmentLabel}: ${bytes.join(' ')}`}
             >
-              <p className="truncate px-2 font-mono text-[7px] uppercase tracking-[0.06em] text-ink-muted">{segmentLabel}</p>
-              <p className="mt-1 truncate px-2 font-mono text-[8px] tracking-[0.06em] text-white sm:text-[9px]">{bytes.join(' ')}</p>
+              <p aria-hidden="true" className="text-center font-mono text-[10px] text-ink-muted">{fieldIndex + 1}</p>
+              <div aria-hidden="true" className="mt-2 grid font-mono text-[11px] text-white" style={{ gridTemplateColumns: `repeat(${bytes.length}, minmax(0, 1fr))` }}>
+                {bytes.map((byte, index) => <span key={index} className="text-center">{byte}</span>)}
+              </div>
             </div>
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function FieldLegend() {
+  return (
+    <div className="mb-4 flex flex-wrap gap-x-4 gap-y-2 font-sans text-xs text-ink-muted" aria-label="Record fields">
+      {SEGMENTS.map(([key, label], index) => <span key={key}><span className="mr-1 font-mono text-accent">{index + 1}</span>{label}</span>)}
     </div>
   );
 }
@@ -624,46 +593,63 @@ function Fingerprint({ label, value }: { label: string; value: string }) {
   );
 }
 
-function FactLine({ label, text }: { label: string; text: string }) {
+function FactLine({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-2 border-b border-white/10 py-5 sm:grid-cols-[7rem_1fr]">
       <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-accent">{label}</p>
-      <p className="font-serif text-lg leading-snug text-white">{text}</p>
+      <p className="font-sans text-sm leading-relaxed text-ink">{children}</p>
     </div>
   );
 }
 
 function NetworkSnapshot() {
   return (
-    <div className="mt-8 grid grid-cols-2 border-y border-white/15 font-mono text-[8px] uppercase tracking-[0.12em] text-ink-muted lg:grid-cols-[1fr_1fr_1.7fr_auto]">
+    <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-white/15 py-4 font-sans text-sm text-ink-muted">
       <a
         href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
         target="_blank"
         rel="noreferrer"
-        className="border-b border-r border-white/10 px-3 py-3 hover:text-white lg:border-b-0"
+        className="text-accent underline decoration-accent/40 underline-offset-4 hover:text-white"
       >
-        <span className="block">Incident page</span>
-        <span className="mt-1 block text-[10px] text-accent">Active · says Liquid paused</span>
+        Incident active · Liquid paused
       </a>
       <a
         href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d"
         target="_blank"
         rel="noreferrer"
-        className="border-b border-white/10 px-3 py-3 hover:text-white lg:border-b-0 lg:border-r"
+        className="text-white underline decoration-white/30 underline-offset-4 hover:text-accent"
       >
-        <span className="block">Returned on Bitcoin</span>
-        <span className="mt-1 block text-[10px] text-white">3,400 BTC confirmed</span>
+        3,400 BTC returned · confirmed
       </a>
-      <div className="col-span-2 border-white/10 px-3 py-3 lg:col-span-1 lg:border-r">
-        <span className="block">Public explorers show different latest blocks</span>
-        <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] normal-case tracking-normal">
-          <a href="https://blockstream.info/liquid/" target="_blank" rel="noreferrer" className="text-white hover:text-accent">Blockstream 4,051,232</a>
-          <span className="text-accent">≠</span>
-          <a href="https://liquid.network/liquid/" target="_blank" rel="noreferrer" className="text-white hover:text-accent">liquid.network 4,050,335</a>
-        </span>
-      </div>
-      <p className="col-span-2 px-3 py-3 lg:col-span-1 lg:text-right">Checked {RESEARCH_CUTOFF}</p>
+      <p className="text-xs">Checked {RESEARCH_CUTOFF}</p>
     </div>
+  );
+}
+
+function SourceLink({ children, href }: { children: React.ReactNode; href: string }) {
+  return <a href={href} target="_blank" rel="noreferrer" className="text-ink underline decoration-white/35 underline-offset-4 hover:text-accent">{children}</a>;
+}
+
+function CurrentGuidance() {
+  return (
+    <section id="guidance" className="scroll-mt-14 border-b border-accent/50 bg-accent/[0.06] px-4 py-10 md:px-8 md:py-14">
+      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
+        <div>
+          <SectionLabel index="01">Status and guidance</SectionLabel>
+          <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused.</h2>
+          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Status checked {RESEARCH_CUTOFF}. This page is a dated snapshot, not a live monitor.</p>
+          <a href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-4 font-sans text-sm text-canvas transition-colors hover:bg-transparent hover:text-accent">
+            Check Blockstream status <ExternalLink size={13} />
+          </a>
+        </div>
+        <div className="border-t border-white/15">
+          <FactLine label="Users"><SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">Liquid says</SourceLink> users do not need to take proactive steps. Check the incident page and your service before trying a transaction.</FactLine>
+          <FactLine label="Network"><SourceLink href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228">Blockstream</SourceLink> still lists the incident as active. The two public explorers show different accepted chain histories.</FactLine>
+          <FactLine label="Funds">A <SourceLink href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d">confirmed transaction</SourceLink> returned 3,400 BTC to the published federation address. Roughly 598.5 BTC remained at the <SourceLink href="https://mempool.space/address/bc1ql4mfu6aundtkksxklfajs2h3t9nzcd6gyqjlte">sender address</SourceLink> at the check above.</FactLine>
+          <FactLine label="Software"><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> was published on 9 September as an emergency pre-release. It hardens the proof caches; its publication is not a restart notice.</FactLine>
+        </div>
+      </div>
+    </section>
   );
 }
 
