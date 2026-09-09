@@ -19,7 +19,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '8 September 2026, 10:32 CEST';
+const RESEARCH_CUTOFF = '9 September 2026, 09:42 CEST';
 const STEP_DELAY = 3600;
 
 const SEQUENCE = [
@@ -83,9 +83,15 @@ const TIMELINE = [
   },
   {
     date: '8 September 2026',
-    title: 'Blockstream said updated software had been deployed and a coordinated restart was being prepared.',
-    href: 'https://x.com/Blockstream/status/2097127976672342487',
-    label: 'Blockstream update',
+    title: 'Liquid published its incident report: about 4,000 unbacked L-BTC had reached the peg-out path.',
+    href: 'https://x.com/Liquid_BTC/status/2097404704028545175',
+    label: 'Incident report',
+  },
+  {
+    date: '9 September 2026',
+    title: 'Elements 23.3.4 was published as a pre-release with hardened proof-cache keys.',
+    href: 'https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4',
+    label: 'Emergency release',
   },
 ] as const;
 
@@ -94,6 +100,7 @@ const SOURCES = [
     group: 'Incident and transactions',
     links: [
       ['Liquid statement', 'https://x.com/Liquid_BTC/status/2096696272447218108'],
+      ['Liquid incident report', 'https://x.com/Liquid_BTC/status/2097404704028545175'],
       ['Blockstream incident status', 'https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228'],
       ['Blockstream restart update', 'https://x.com/Blockstream/status/2097127976672342487'],
       ['Disputed Liquid transaction', 'https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f'],
@@ -109,6 +116,8 @@ const SOURCES = [
       ['2019 cache implementation', 'https://github.com/ElementsProject/elements/commit/0b5066143dcdfc3ba7780d1a2c6f18c2c6fefd6a'],
       ['2026 cache-key change', 'https://github.com/ElementsProject/elements/commit/c26d719c29a40da280a825b25657e9c3d8bc7d99'],
       ['Pull request #1592', 'https://github.com/ElementsProject/elements/pull/1592'],
+      ['Cache hardening pull request #1600', 'https://github.com/ElementsProject/elements/pull/1600'],
+      ['Elements 23.3.4 emergency pre-release', 'https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4'],
       ['Current Elements releases', 'https://github.com/ElementsProject/elements/releases'],
     ],
   },
@@ -204,10 +213,10 @@ export function LiquidStudy() {
             </h1>
             <div className="mt-7 grid gap-5 lg:grid-cols-2 lg:gap-12">
               <p className="font-sans text-base leading-relaxed text-ink">
-                On 6 September 2026, Liquid split into two versions of its transaction history. One side accepted a disputed transaction. Two withdrawals from that side were later paid together in one Bitcoin transaction, sending 3,998.67 BTC from the federation wallet.
+                Liquid&apos;s incident report says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The SideSwap peg-out route then released 3,998.67 BTC from the federation wallet.
               </p>
               <p className="font-sans text-sm leading-relaxed text-ink-muted">
-                Those transactions are public, and the relevant Elements code contains the cache flaw described below. The exact software builds and cached data from the servers that signed the disputed chain are not public.
+                The explorers split at the disputed block on 6 September. The transactions and cache code are public; the exact software and cached data on every server that signed the disputed chain are not.
               </p>
             </div>
             <NetworkSnapshot />
@@ -243,13 +252,13 @@ export function LiquidStudy() {
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
               <SectionLabel index="02">Status and guidance</SectionLabel>
-              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused while the federation prepares a restart.</h2>
+              <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused. The emergency release is public.</h2>
             </div>
             <div className="border-t border-white/15">
-              <FactLine label="Network" text="Blockstream still lists the incident as active. On 8 September, it said updated software had been deployed and a coordinated restart was being prepared." />
+              <FactLine label="Network" text="Blockstream still lists the incident as active. The two public explorers still disagree, and neither tip has moved since the previous check." />
+              <FactLine label="Software" text="Elements 23.3.4 was published on 9 September as a pre-release. It hardens the proof caches; its publication is not a restart notice." />
               <FactLine label="Funds" text="A confirmed transaction sent 3,400 BTC to the published federation return address. Roughly 598.5 BTC remains at the sender address." />
-              <FactLine label="Users" text="Check that page and your wallet, exchange or service before attempting a Liquid transaction." />
-              <FactLine label="Scope" text="Blockstream says no authorization keys were compromised. The bug was in Liquid’s software; Bitcoin processed the signed payout under its normal rules." />
+              <FactLine label="Users" text="Liquid says users do not need to take proactive steps. Check the incident page and your service before trying a transaction." />
               <a
                 href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
                 target="_blank"
@@ -322,7 +331,8 @@ export function LiquidStudy() {
               <div className="mt-6 space-y-3 border-l border-accent pl-5 font-sans text-sm leading-relaxed text-ink-muted">
                 <p>Blockstream calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed.</p>
                 <p>A PGP-signed message placed on Bitcoin says the bridge nodes were patched. The signature does not identify its sender.</p>
-                <p>The latest public Elements release still predates the 1 September cache change. Blockstream did not identify the deployed build in its update.</p>
+                <p>Elements 23.3.4 is public as a pre-release. Its fix records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and adds an option to bypass the range-proof cache.</p>
+                <p>The incident report gives 15:53:10 UTC for block 4,050,336. The block explorer records 13:53:10 UTC, so this page uses the block height and does not treat either time as settled.</p>
               </div>
             </div>
           </div>
