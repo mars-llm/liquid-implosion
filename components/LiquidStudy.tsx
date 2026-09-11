@@ -18,7 +18,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '9 September 2026, 12:02 CEST';
+const RESEARCH_CUTOFF = '11 September 2026, 09:48 CEST';
 const STEP_DELAY = 8000;
 
 const SEQUENCE = [
@@ -83,9 +83,21 @@ const TIMELINE = [
   },
   {
     date: '9 September 2026',
-    title: 'Elements 23.3.4 was published as a pre-release with hardened proof-cache keys.',
+    title: 'Elements 23.3.4 was released with hardened proof-cache keys.',
     href: 'https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4',
-    label: 'Emergency release',
+    label: 'Software release',
+  },
+  {
+    date: '10 September 2026',
+    title: 'Block production and transactions resumed. Peg-outs stayed disabled.',
+    href: 'https://x.com/Liquid_BTC/status/2098140614239920622',
+    label: 'Network update',
+  },
+  {
+    date: '11 September 2026',
+    title: 'SideSwap reopened peg-ins, while warning that the public reserve remained below the L-BTC in circulation.',
+    href: 'https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/',
+    label: 'SideSwap update',
   },
 ] as const;
 
@@ -95,8 +107,13 @@ const SOURCES = [
     links: [
       ['Liquid statement', 'https://x.com/Liquid_BTC/status/2096696272447218108'],
       ['Liquid incident report', 'https://x.com/Liquid_BTC/status/2097404704028545175'],
+      ['Liquid transaction-resumption update', 'https://x.com/Liquid_BTC/status/2098140614239920622'],
       ['Blockstream incident status', 'https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228'],
       ['Blockstream restart update', 'https://x.com/Blockstream/status/2097127976672342487'],
+      ['Blockstream recovery position', 'https://x.com/Blockstream/status/2098281867908690394'],
+      ['BULL service update', 'https://x.com/BULLBITCOIN_/status/2098119275709915464'],
+      ['SideSwap incident statement', 'https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/'],
+      ['SideSwap peg-in update', 'https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/'],
       ['Disputed Liquid transaction', 'https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f'],
       ['Bitcoin federation payout', 'https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140'],
       ['Signed bridge-node message', 'https://blockstream.info/tx/87dc0a20099a94c2caaa3fa93d1724cfe41b05ae5e0778cc0e8994b22e81120c'],
@@ -111,7 +128,7 @@ const SOURCES = [
       ['2026 cache-key change', 'https://github.com/ElementsProject/elements/commit/c26d719c29a40da280a825b25657e9c3d8bc7d99'],
       ['Pull request #1592', 'https://github.com/ElementsProject/elements/pull/1592'],
       ['Cache hardening pull request #1600', 'https://github.com/ElementsProject/elements/pull/1600'],
-      ['Elements 23.3.4 emergency pre-release', 'https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4'],
+      ['Elements 23.3.4 release', 'https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4'],
       ['Current Elements releases', 'https://github.com/ElementsProject/elements/releases'],
     ],
   },
@@ -205,11 +222,11 @@ export function LiquidStudy() {
               Liquid Implosion · 6 September 2026
             </p>
             <h1 className="mt-4 max-w-5xl font-serif text-4xl leading-[1.02] text-white sm:text-6xl">
-              How a cache bug led to a 3,998.67 BTC payout
+              How a cache bug moved almost 4,000 BTC out of Liquid&apos;s reserve
             </h1>
             <div className="mt-7 grid gap-5 lg:grid-cols-2 lg:gap-12">
               <p className="font-sans text-base leading-relaxed text-ink">
-                <SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">Liquid&apos;s incident report</SourceLink> says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The SideSwap peg-out route then released 3,998.67 BTC from the federation wallet.
+                <SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">Liquid&apos;s incident report</SourceLink> says a cache flaw allowed about 4,000 L-BTC without matching BTC backing. The <SourceLink href="https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140">federation&apos;s Bitcoin transaction</SourceLink> then paid 3,998.67 BTC across two peg-outs.
               </p>
               <p className="font-sans text-sm leading-relaxed text-ink-muted">
                 Liquid is a Bitcoin-linked network: its L-BTC is meant to match BTC held by its operators, the federation, one-for-one. A peg-out withdraws BTC by removing the matching L-BTC from circulation.
@@ -303,8 +320,9 @@ export function LiquidStudy() {
                 </summary>
                 <div className="pb-6">
                   <div className="border-t border-white/10 py-5 font-sans text-sm leading-relaxed text-ink-muted">
-                    <p><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and adds an option to bypass the range-proof cache.</p>
-                    <p className="mt-3">Explorer snapshot at {RESEARCH_CUTOFF}: <SourceLink href="https://blockstream.info/liquid/">Blockstream 4,051,232</SourceLink>; <SourceLink href="https://liquid.network/liquid/">liquid.network 4,050,335</SourceLink>. Neither tip had moved since the previous check.</p>
+                    <p><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> is now the latest signed release. It records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and can bypass the range-proof cache.</p>
+                    <p className="mt-3">Explorer snapshot at {RESEARCH_CUTOFF}: <SourceLink href="https://blockstream.info/liquid/">Blockstream</SourceLink> and <SourceLink href="https://liquid.network/liquid/">liquid.network</SourceLink> agreed on block 4,052,401 and its hash. Both APIs showed the disputed mint transaction as unconfirmed on the current chain.</p>
+                    <p className="mt-3"><SourceLink href="https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/">SideSwap says</SourceLink> it found 70 balanced rehearsal transactions followed by the single unbalanced mint transaction. It also says its node ran a private security build supplied in August, yet still accepted the mint. These are SideSwap&apos;s findings; the build itself has not been published.</p>
                     <p className="mt-3">The demonstration hashes its bytes with the same fixed educational salt for both records. Full SHA-256 fingerprint:</p>
                     <code className="mt-2 block break-all text-xs text-ink">{validFingerprint || 'Calculating…'}</code>
                   </div>
@@ -323,7 +341,7 @@ export function LiquidStudy() {
                 </div>
               </details>
               <div className="mt-6 space-y-3 border-l border-accent pl-5 font-sans text-sm leading-relaxed text-ink-muted">
-                <p><SourceLink href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228">Blockstream</SourceLink> calls the actors “purported white-hat hackers.” Their identity and intent have not been independently confirmed.</p>
+                <p><SourceLink href="https://x.com/Blockstream/status/2098281867908690394">Blockstream now says</SourceLink> it will not pay the requested ransom and will pursue legal and forensic recovery. That is Blockstream&apos;s position; the actors&apos; identity remains unconfirmed.</p>
                 <p>A <SourceLink href="https://blockstream.info/tx/87dc0a20099a94c2caaa3fa93d1724cfe41b05ae5e0778cc0e8994b22e81120c">PGP-signed message placed on Bitcoin</SourceLink> says the bridge nodes were patched. The signature does not identify its sender.</p>
                 <p>The <SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">incident report</SourceLink> gives 15:53:10 UTC for block 4,050,336. The <SourceLink href="https://blockstream.info/liquid/block/e1d9a2aae69e0fc3ca18f7f7f84e0615e92a5e3b5000d66c10c34043346da0d5">block explorer</SourceLink> records 13:53:10 UTC, so this page uses the block height and does not treat either time as settled.</p>
               </div>
@@ -606,12 +624,12 @@ function NetworkSnapshot() {
   return (
     <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-white/15 py-4 font-sans text-sm text-ink-muted">
       <a
-        href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228"
+        href="https://x.com/Liquid_BTC/status/2098140614239920622"
         target="_blank"
         rel="noreferrer"
         className="text-accent underline decoration-accent/40 underline-offset-4 hover:text-white"
       >
-        Incident active · Liquid paused
+        Transactions running · peg-outs disabled
       </a>
       <a
         href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d"
@@ -636,17 +654,18 @@ function CurrentGuidance() {
       <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
           <SectionLabel index="01">Status and guidance</SectionLabel>
-          <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Liquid is still paused.</h2>
-          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Checked {RESEARCH_CUTOFF}. Use Blockstream&apos;s incident page for the latest operational status.</p>
-          <a href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-4 font-sans text-sm text-canvas transition-colors hover:bg-transparent hover:text-accent">
-            Check Blockstream status <ExternalLink size={13} />
+          <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Transactions are running. Peg-outs are not.</h2>
+          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Checked {RESEARCH_CUTOFF}. Availability depends on the service.</p>
+          <a href="https://x.com/Liquid_BTC/status/2098140614239920622" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-4 font-sans text-sm text-canvas transition-colors hover:bg-transparent hover:text-accent">
+            Read the network update <ExternalLink size={13} />
           </a>
         </div>
         <div className="border-t border-white/15">
-          <FactLine label="Users"><SourceLink href="https://x.com/Liquid_BTC/status/2097404704028545175">Liquid says</SourceLink> users do not need to take proactive steps. Check the incident page and your service before trying a transaction.</FactLine>
-          <FactLine label="Network"><SourceLink href="https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228">Blockstream</SourceLink> still lists the incident as active. The two public explorers show different accepted chain histories.</FactLine>
-          <FactLine label="Funds">A <SourceLink href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d">confirmed transaction</SourceLink> returned 3,400 BTC to the published federation address. Roughly 598.5 BTC remained at the <SourceLink href="https://mempool.space/address/bc1ql4mfu6aundtkksxklfajs2h3t9nzcd6gyqjlte">sender address</SourceLink> at the check above.</FactLine>
-          <FactLine label="Software"><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> hardens the proof caches. Blockstream&apos;s status page—not the software release—shows whether Liquid has resumed.</FactLine>
+          <FactLine label="Network"><SourceLink href="https://x.com/Liquid_BTC/status/2098140614239920622">Liquid says</SourceLink> block production and transactions have resumed. The two public explorers now agree on the current chain.</FactLine>
+          <FactLine label="Backing"><SourceLink href="https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/">SideSwap reported</SourceLink> 4,229 L-BTC in circulation against 3,627 BTC in the federation reserve on 11 September. The difference was about 602 BTC. Peg-outs remain closed, so L-BTC cannot currently be redeemed for BTC through the federation.</FactLine>
+          <FactLine label="Funds">A <SourceLink href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d">confirmed transaction</SourceLink> returned 3,400 BTC. About 598.50 BTC remained at the <SourceLink href="https://mempool.space/address/bc1ql4mfu6aundtkksxklfajs2h3t9nzcd6gyqjlte">reported address</SourceLink> at the check above.</FactLine>
+          <FactLine label="Services"><SourceLink href="https://x.com/BULLBITCOIN_/status/2098119275709915464">BULL says</SourceLink> its Bitcoin wallet is unaffected. In its Liquid wallet, swaps from L-BTC to Bitcoin or Lightning and the automatic sweep above 1,000,000 sats remain unavailable. Check your own provider before sending.</FactLine>
+          <FactLine label="Software"><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> is the latest signed release and hardens the proof caches. A software release does not by itself restore the peg.</FactLine>
         </div>
       </div>
     </section>

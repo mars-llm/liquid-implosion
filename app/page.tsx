@@ -4,7 +4,7 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'Liquid Implosion',
-  description: 'How a cache bug led to a 3,998.67 BTC payout from Liquid’s federation wallet, what the public evidence shows, and what remains unverified.',
+  description: 'How a cache bug moved almost 4,000 BTC out of Liquid’s reserve, what has reopened, and what the public record still cannot answer.',
   url: 'https://mars-llm.github.io/liquid-implosion/',
   about: [
     { '@type': 'Thing', name: 'Liquid Network' },

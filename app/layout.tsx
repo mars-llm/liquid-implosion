@@ -4,7 +4,7 @@ import './globals.css';
 
 const SITE_URL = 'https://mars-llm.github.io/liquid-implosion/';
 const TITLE = 'Liquid Implosion | September 2026 Liquid cache bug';
-const DESCRIPTION = 'How a cache bug led to a 3,998.67 BTC payout from Liquid’s federation wallet, what the public evidence shows, and what remains unverified.';
+const DESCRIPTION = 'How a cache bug moved almost 4,000 BTC out of Liquid’s reserve, what has reopened, and what the public record still cannot answer.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
