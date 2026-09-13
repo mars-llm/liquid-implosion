@@ -18,7 +18,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '11 September 2026, 09:48 CEST';
+const RESEARCH_CUTOFF = '13 September 2026, 09:39 CEST';
 const STEP_DELAY = 8000;
 
 const SEQUENCE = [
@@ -46,20 +46,20 @@ const SEQUENCE = [
 
 const TIMELINE = [
   {
-    date: 'March 2019',
-    title: 'A proof cache was added. Its key omitted two inputs used by the proof check.',
-    href: 'https://github.com/ElementsProject/elements/commit/0b5066143dcdfc3ba7780d1a2c6f18c2c6fefd6a',
-    label: 'Original code',
+    date: '25 April 2018',
+    title: 'A simplification reduced the range-proof cache key to the proof and value commitment. The asset and output script were left out.',
+    href: 'https://github.com/ElementsProject/elements/commit/957216523881768d9bcd6c5092dd5d50495dcd4e',
+    label: 'Cache-key change',
   },
   {
     date: '1 September 2026 · merged',
-    title: 'PR #1592 merged a patch adding those inputs, but joining four fields without recording their lengths. This is a source-code date, not a confirmed deployment date.',
+    title: 'PR #1592 restored the missing fields, but joined all four without recording their lengths. This is a source-code date, not a confirmed deployment date.',
     href: 'https://github.com/ElementsProject/elements/pull/1592',
     label: 'Merged change',
   },
   {
     date: '6 September 2026',
-    title: 'Liquid explorers disagreed over the accepted chain at block 4,050,336. Two peg-outs followed on one side.',
+    title: 'Two valid records in block 4,050,335 could prime the cache. The next block reused the same bytes with different field boundaries, splitting the chain.',
     href: 'https://blockstream.info/liquid/block/e1d9a2aae69e0fc3ca18f7f7f84e0615e92a5e3b5000d66c10c34043346da0d5',
     label: 'View block',
   },
@@ -114,6 +114,8 @@ const SOURCES = [
       ['BULL service update', 'https://x.com/BULLBITCOIN_/status/2098119275709915464'],
       ['SideSwap incident statement', 'https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/'],
       ['SideSwap peg-in update', 'https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/'],
+      ['Primer transaction A', 'https://blockstream.info/liquid/tx/271147100a94f6337b6c3db39b30c92d5b97ed91597307b6f721f73a15187ec5'],
+      ['Primer transaction B', 'https://blockstream.info/liquid/tx/71c93d4339fe8328981a2ec0dd23808d1ff104dc4c4cbcfc5c06fb2bb622f411'],
       ['Disputed Liquid transaction', 'https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f'],
       ['Bitcoin federation payout', 'https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140'],
       ['Signed bridge-node message', 'https://blockstream.info/tx/87dc0a20099a94c2caaa3fa93d1724cfe41b05ae5e0778cc0e8994b22e81120c'],
@@ -124,7 +126,7 @@ const SOURCES = [
   {
     group: 'Source code',
     links: [
-      ['2019 cache implementation', 'https://github.com/ElementsProject/elements/commit/0b5066143dcdfc3ba7780d1a2c6f18c2c6fefd6a'],
+      ['2018 cache-key simplification', 'https://github.com/ElementsProject/elements/commit/957216523881768d9bcd6c5092dd5d50495dcd4e'],
       ['2026 cache-key change', 'https://github.com/ElementsProject/elements/commit/c26d719c29a40da280a825b25657e9c3d8bc7d99'],
       ['Pull request #1592', 'https://github.com/ElementsProject/elements/pull/1592'],
       ['Cache hardening pull request #1600', 'https://github.com/ElementsProject/elements/pull/1600'],
@@ -138,6 +140,8 @@ const SOURCES = [
       ['How Liquid peg-outs work', 'https://docs.liquid.net/docs/advanced-pegin-pegout'],
       ['Liquid technical overview', 'https://docs.liquid.net/docs/technical-overview'],
       ['Independent forensic report', 'https://gist.github.com/1440000bytes/211ac92dd4433bb1a2e674bf0ff7db2e'],
+      ['Independent transaction replay monitor', 'https://github.com/orangesurf/liquid-transaction-replay-monitor'],
+      ['Steven Roose code walkthrough', 'https://insider.btcpp.dev/p/how-cache-optimization-not-broken'],
     ],
   },
 ] as const;
@@ -268,9 +272,12 @@ export function LiquidStudy() {
             />
             <div className="mt-10 border-t border-accent/40 pt-6">
               <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">What happened on Liquid</p>
-              <h3 className="mt-3 font-serif text-2xl text-white">Two Liquid withdrawals were paid in one Bitcoin transaction.</h3>
+              <h3 className="mt-3 font-serif text-2xl text-white">The same 4,301 bytes were read as different fields.</h3>
               <p className="mt-3 max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
-                The <SourceLink href="https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140">federation payout transaction</SourceLink> contains both outputs, totaling 3,998.67 BTC. The transactions and cache code are public; the exact software and cached data on every server that signed the disputed chain are not.
+                Two transactions in block 4,050,335 contained a valid record that could prime affected caches. The <SourceLink href="https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f">mint transaction</SourceLink> in the next block arranged different fields into the same byte sequence. Affected nodes could then reuse the earlier result instead of checking the invalid proof.
+              </p>
+              <p className="mt-3 max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
+                The <SourceLink href="https://blockstream.info/tx/8db751a650ae2f12006b7e8c69a75e4df360e8afd6b9e05ae0b9fa6458a7b140">federation payout transaction</SourceLink> then paid two outputs totaling 3,998.67 BTC. The public record does not reveal the exact software and cached data on every server that signed the disputed chain.
               </p>
             </div>
           </div>
@@ -321,7 +328,8 @@ export function LiquidStudy() {
                 <div className="pb-6">
                   <div className="border-t border-white/10 py-5 font-sans text-sm leading-relaxed text-ink-muted">
                     <p><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> is now the latest signed release. It records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and can bypass the range-proof cache.</p>
-                    <p className="mt-3">Explorer snapshot at {RESEARCH_CUTOFF}: <SourceLink href="https://blockstream.info/liquid/">Blockstream</SourceLink> and <SourceLink href="https://liquid.network/liquid/">liquid.network</SourceLink> agreed on block 4,052,401 and its hash. Both APIs showed the disputed mint transaction as unconfirmed on the current chain.</p>
+                    <p className="mt-3">Explorer snapshot at {RESEARCH_CUTOFF}: <SourceLink href="https://blockstream.info/liquid/">Blockstream</SourceLink> and <SourceLink href="https://liquid.network/liquid/">liquid.network</SourceLink> agreed on block 4,055,272 and its hash. Both APIs showed the disputed mint transaction as unconfirmed on the current chain.</p>
+                    <p className="mt-3">An <SourceLink href="https://github.com/orangesurf/liquid-transaction-replay-monitor">independent exact-transaction monitor</SourceLink> reported that all 608 expected legitimate transactions from the abandoned fork had later appeared on the accepted chain, while none of the eight tainted transactions had. Its last published check was 13 September at 06:15 UTC.</p>
                     <p className="mt-3"><SourceLink href="https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/">SideSwap says</SourceLink> it found 70 balanced rehearsal transactions followed by the single unbalanced mint transaction. It also says its node ran a private security build supplied in August, yet still accepted the mint. These are SideSwap&apos;s findings; the build itself has not been published.</p>
                     <p className="mt-3">The demonstration hashes its bytes with the same fixed educational salt for both records. Full SHA-256 fingerprint:</p>
                     <code className="mt-2 block break-all text-xs text-ink">{validFingerprint || 'Calculating…'}</code>
