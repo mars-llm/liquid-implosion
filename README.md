@@ -8,7 +8,9 @@ The page links each claim to the public transactions, Blockstream’s statements
 
 The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed.
 
-Block production and transactions resumed on 10 September. Peg-outs remain disabled. SideSwap reopened peg-ins on 11 September while reporting 4,229 L-BTC in circulation against 3,627 BTC in the federation reserve. A confirmed transaction returned 3,400 BTC, and about 598.50 BTC remained at the reported address when the page was checked on 13 September at 09:39 CEST. At that time, the two public explorers agreed on the accepted chain. An independent exact-transaction monitor reported that all 608 expected legitimate transactions from the abandoned fork had reappeared on that chain and none of the eight tainted transactions had. Elements 23.3.4 is the latest signed release and hardens the proof-cache keys.
+Block production and transactions resumed on 10 September. Peg-outs remain disabled, with no reopening date. Liquid says the reserve must first be fully backed and the required software updates, testing and independent security reviews completed. SideSwap reopened peg-ins on 11 September while reporting 4,229 L-BTC in circulation against 3,627 BTC in the federation reserve.
+
+A confirmed transaction returned 3,400 BTC. About 598.50 BTC remained at the reported address when the page was checked on 20 September at 23:41 CEST. The two public explorers agreed on the accepted chain, and an independent monitor still reported all 608 expected legitimate transactions from the abandoned fork on that chain. None of the eight tainted transactions had appeared there. Elements 23.3.4 remains the latest signed release and hardens the proof-cache keys.
 
 This project is not affiliated with Blockstream, Liquid or SideSwap.
 
@@ -34,6 +36,7 @@ The production build is a static export in `out/` and is configured for the `/li
 - [Liquid statement](https://x.com/Liquid_BTC/status/2096696272447218108)
 - [Liquid incident report](https://x.com/Liquid_BTC/status/2097404704028545175)
 - [Liquid transaction-resumption update](https://x.com/Liquid_BTC/status/2098140614239920622)
+- [Liquid ecosystem and peg-out update](https://x.com/Liquid_BTC/status/2100696334596452426)
 - [Blockstream incident status](https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228)
 - [Blockstream restart update](https://x.com/Blockstream/status/2097127976672342487)
 - [Blockstream recovery position](https://x.com/Blockstream/status/2098281867908690394)
