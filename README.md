@@ -8,9 +8,9 @@ The page links each claim to the public transactions, Blockstream’s statements
 
 The transactions and source code are public. The exact software builds and cached data on the servers that signed the disputed chain are not. The identity and intent of the actors are also unconfirmed.
 
-Block production and transactions resumed on 10 September. Peg-outs remain disabled, with no reopening date. Liquid says the reserve must first be fully backed and the required software updates, testing and independent security reviews completed. SideSwap reopened peg-ins on 11 September while reporting 4,229 L-BTC in circulation against 3,627 BTC in the federation reserve.
+Block production and transactions resumed on 10 September. SideSwap reopened its BTC withdrawal service on 20 October. On 3 November, SideSwap reported that the federation reserve matched L-BTC in circulation again, while direct federation peg-outs remained restricted. Its service uses its own Bitcoin wallet and may have delays while the wallet is refilled.
 
-A confirmed transaction returned 3,400 BTC. About 598.50 BTC remained at the reported address when the page was checked on 20 September at 23:41 CEST. The two public explorers agreed on the accepted chain, and an independent monitor still reported all 608 expected legitimate transactions from the abandoned fork on that chain. None of the eight tainted transactions had appeared there. Elements 23.3.4 remains the latest signed release and hardens the proof-cache keys.
+A confirmed transaction returned 3,400 BTC in September. SideSwap reports later deposits replenished the reserve but does not identify their source. On 20 September the two public explorers agreed on the accepted chain, and an independent monitor reported all 608 expected legitimate transactions from the abandoned fork on that chain. None of the eight tainted transactions had appeared there. Elements 23.3.4 remains the latest signed release and hardens the proof-cache keys.
 
 This project is not affiliated with Blockstream, Liquid or SideSwap.
 
@@ -37,12 +37,15 @@ The production build is a static export in `out/` and is configured for the `/li
 - [Liquid incident report](https://x.com/Liquid_BTC/status/2097404704028545175)
 - [Liquid transaction-resumption update](https://x.com/Liquid_BTC/status/2098140614239920622)
 - [Liquid ecosystem and peg-out update](https://x.com/Liquid_BTC/status/2100696334596452426)
+- [Liquid Federation reserve update](https://x.com/Liquid_BTC/status/2117407283391214047)
 - [Blockstream incident status](https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228)
 - [Blockstream restart update](https://x.com/Blockstream/status/2097127976672342487)
 - [Blockstream recovery position](https://x.com/Blockstream/status/2098281867908690394)
 - [BULL service update](https://x.com/BULLBITCOIN_/status/2098119275709915464)
 - [SideSwap incident statement](https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/)
 - [SideSwap peg-in update](https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/)
+- [SideSwap peg-out reopening](https://sideswap.io/news/peg-out-is-open-again-on-sideswap/)
+- [SideSwap backing and service update](https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/)
 - [Primer transaction A](https://blockstream.info/liquid/tx/271147100a94f6337b6c3db39b30c92d5b97ed91597307b6f721f73a15187ec5)
 - [Primer transaction B](https://blockstream.info/liquid/tx/71c93d4339fe8328981a2ec0dd23808d1ff104dc4c4cbcfc5c06fb2bb622f411)
 - [Disputed Liquid transaction](https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f)

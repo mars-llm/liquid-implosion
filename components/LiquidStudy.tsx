@@ -18,7 +18,7 @@ import {
   type CacheRecord,
 } from '../lib/model';
 
-const RESEARCH_CUTOFF = '20 September 2026, 23:41 CEST';
+const RESEARCH_CUTOFF = '7 November 2026';
 const STEP_DELAY = 8000;
 
 const SEQUENCE = [
@@ -103,7 +103,19 @@ const TIMELINE = [
     date: '17 September 2026',
     title: 'Liquid said transactions had operated normally since the restart, but gave no date for restoring peg-outs.',
     href: 'https://x.com/Liquid_BTC/status/2100696334596452426',
-    label: 'Latest update',
+    label: 'Network update',
+  },
+  {
+    date: '20 October 2026',
+    title: 'SideSwap reopened its BTC withdrawal service using its own wallet. Direct federation peg-outs were still restricted.',
+    href: 'https://sideswap.io/news/peg-out-is-open-again-on-sideswap/',
+    label: 'SideSwap update',
+  },
+  {
+    date: '3 November 2026',
+    title: 'SideSwap reported that the federation reserve again matched L-BTC in circulation. Direct federation peg-outs had not yet returned.',
+    href: 'https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/',
+    label: 'Backing update',
   },
 ] as const;
 
@@ -115,12 +127,15 @@ const SOURCES = [
       ['Liquid incident report', 'https://x.com/Liquid_BTC/status/2097404704028545175'],
       ['Liquid transaction-resumption update', 'https://x.com/Liquid_BTC/status/2098140614239920622'],
       ['Liquid ecosystem and peg-out update', 'https://x.com/Liquid_BTC/status/2100696334596452426'],
+      ['Liquid Federation reserve update', 'https://x.com/Liquid_BTC/status/2117407283391214047'],
       ['Blockstream incident status', 'https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228'],
       ['Blockstream restart update', 'https://x.com/Blockstream/status/2097127976672342487'],
       ['Blockstream recovery position', 'https://x.com/Blockstream/status/2098281867908690394'],
       ['BULL service update', 'https://x.com/BULLBITCOIN_/status/2098119275709915464'],
       ['SideSwap incident statement', 'https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/'],
       ['SideSwap peg-in update', 'https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/'],
+      ['SideSwap peg-out reopening', 'https://sideswap.io/news/peg-out-is-open-again-on-sideswap/'],
+      ['SideSwap backing and service update', 'https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/'],
       ['Primer transaction A', 'https://blockstream.info/liquid/tx/271147100a94f6337b6c3db39b30c92d5b97ed91597307b6f721f73a15187ec5'],
       ['Primer transaction B', 'https://blockstream.info/liquid/tx/71c93d4339fe8328981a2ec0dd23808d1ff104dc4c4cbcfc5c06fb2bb622f411'],
       ['Disputed Liquid transaction', 'https://blockstream.info/liquid/tx/f24a4b179b5cc7e88b25a763911f7cbdf2bf45d1d1b5ab611e94461cef0a183f'],
@@ -335,9 +350,9 @@ export function LiquidStudy() {
                 <div className="pb-6">
                   <div className="border-t border-white/10 py-5 font-sans text-sm leading-relaxed text-ink-muted">
                     <p><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> remains the latest signed release. It records field lengths in both proof-cache keys, includes a previously missing surjection-proof input, and can bypass the range-proof cache.</p>
-                    <p className="mt-3"><SourceLink href="https://x.com/Liquid_BTC/status/2100696334596452426">Liquid says</SourceLink> a full technical report will follow. That report was not on the Liquid account, the Blockstream blog or the Elements release and security pages when this page was checked.</p>
-                    <p className="mt-3">Explorer snapshot at {RESEARCH_CUTOFF}: <SourceLink href="https://blockstream.info/liquid/">Blockstream</SourceLink> and <SourceLink href="https://liquid.network/liquid/">liquid.network</SourceLink> agreed on block 4,066,190 and its hash. Both APIs showed the disputed mint transaction as unconfirmed on the current chain.</p>
-                    <p className="mt-3">An <SourceLink href="https://github.com/orangesurf/liquid-transaction-replay-monitor">independent exact-transaction monitor</SourceLink> still reported all 608 expected legitimate transactions from the abandoned fork on the accepted chain, and none of the eight tainted transactions. Its latest published check was 20 September at 19:29 UTC.</p>
+                    <p className="mt-3">SideSwap links to a <SourceLink href="https://blog.blockstream.com/liquid-network-security-incident-assessment/">Blockstream incident assessment</SourceLink>.</p>
+                    <p className="mt-3">On 20 September at 23:41 CEST, <SourceLink href="https://blockstream.info/liquid/">Blockstream</SourceLink> and <SourceLink href="https://liquid.network/liquid/">liquid.network</SourceLink> agreed on block 4,066,190 and its hash. Both APIs showed the disputed mint transaction as unconfirmed on that chain.</p>
+                    <p className="mt-3">On 20 September at 19:29 UTC, an <SourceLink href="https://github.com/orangesurf/liquid-transaction-replay-monitor">independent monitor</SourceLink> reported all 608 expected legitimate transactions from the abandoned fork on the accepted chain, and none of the eight tainted transactions.</p>
                     <p className="mt-3"><SourceLink href="https://sideswap.io/news/statement-on-the-liquid-network-incident-of-6-september-2026/">SideSwap says</SourceLink> it found 70 balanced rehearsal transactions followed by the single unbalanced mint transaction. It also says its node ran a private security build supplied in August, yet still accepted the mint. These are SideSwap&apos;s findings; the build itself has not been published.</p>
                     <p className="mt-3">The demonstration hashes its bytes with the same fixed educational salt for both records. Full SHA-256 fingerprint:</p>
                     <code className="mt-2 block break-all text-xs text-ink">{validFingerprint || 'Calculating…'}</code>
@@ -640,12 +655,12 @@ function NetworkSnapshot() {
   return (
     <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-white/15 py-4 font-sans text-sm text-ink-muted">
       <a
-        href="https://x.com/Liquid_BTC/status/2100696334596452426"
+        href="https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/"
         target="_blank"
         rel="noreferrer"
         className="text-accent underline decoration-accent/40 underline-offset-4 hover:text-white"
       >
-        Transactions running · peg-outs disabled
+        SideSwap reports restored backing · 3 November
       </a>
       <a
         href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d"
@@ -655,7 +670,7 @@ function NetworkSnapshot() {
       >
         3,400 BTC returned · confirmed
       </a>
-      <p className="text-xs">Checked {RESEARCH_CUTOFF}</p>
+      <p className="text-xs">Updated {RESEARCH_CUTOFF}</p>
     </div>
   );
 }
@@ -670,17 +685,16 @@ function CurrentGuidance() {
       <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
           <SectionLabel index="01">Status and guidance</SectionLabel>
-          <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">Transactions are running. Peg-outs are not.</h2>
-          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Checked {RESEARCH_CUTOFF}. Availability depends on the service.</p>
-          <a href="https://x.com/Liquid_BTC/status/2100696334596452426" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-4 font-sans text-sm text-canvas transition-colors hover:bg-transparent hover:text-accent">
-            Read the network update <ExternalLink size={13} />
+          <h2 className="mt-5 font-serif text-3xl text-white sm:text-5xl">The reserve has been replenished.</h2>
+          <p className="mt-5 font-sans text-xs leading-relaxed text-ink-muted">Updated {RESEARCH_CUTOFF}. Service availability can change.</p>
+          <a href="https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-4 font-sans text-sm text-canvas transition-colors hover:bg-transparent hover:text-accent">
+            Read the SideSwap update <ExternalLink size={13} />
           </a>
         </div>
         <div className="border-t border-white/15">
-          <FactLine label="Network"><SourceLink href="https://x.com/Liquid_BTC/status/2100696334596452426">Liquid says</SourceLink> block production and transactions have operated normally since the restart. Some wallets and exchanges have reopened Liquid services, but each provider decides what is available. The two public explorers agree on the current chain.</FactLine>
-          <FactLine label="Backing"><SourceLink href="https://sideswap.io/news/liquid-peg-ins-are-open-again-on-sideswap/">SideSwap reported</SourceLink> 4,229 L-BTC in circulation against 3,627 BTC in the federation reserve on 11 September. The difference was about 602 BTC. Peg-outs remain closed, so L-BTC cannot currently be redeemed for BTC through the federation.</FactLine>
-          <FactLine label="Funds">A <SourceLink href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d">confirmed transaction</SourceLink> returned 3,400 BTC. About 598.50 BTC remained at the <SourceLink href="https://mempool.space/address/bc1ql4mfu6aundtkksxklfajs2h3t9nzcd6gyqjlte">reported address</SourceLink> at the check above.</FactLine>
-          <FactLine label="Peg-outs">There is still no reopening date. <SourceLink href="https://x.com/Liquid_BTC/status/2100696334596452426">Liquid says</SourceLink> peg-outs will return only after the reserve is fully backed and the required software updates, testing and independent security reviews are complete.</FactLine>
+          <FactLine label="Backing">On 3 November, the <SourceLink href="https://x.com/Liquid_BTC/status/2117407283391214047">federation announced</SourceLink> that full BTC backing had been restored. <SourceLink href="https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/">SideSwap reported</SourceLink> 4,270.54 L-BTC and 4,270.54 BTC in reserve that morning. These are dated figures, not live balances.</FactLine>
+          <FactLine label="Funds">A <SourceLink href="https://mempool.space/tx/a6d697a25266ce3c78774fd1d75f896b7af522ada209b0f6228ea497bc49a46d">confirmed transaction</SourceLink> returned 3,400 BTC in September. SideSwap reports that later deposits replenished the reserve; it does not identify their source.</FactLine>
+          <FactLine label="Withdrawals"><SourceLink href="https://sideswap.io/news/the-liquid-peg-is-back-to-one-to-one/">SideSwap says</SourceLink> its BTC withdrawal service has been open since 20 October. On 3 November, it said direct federation peg-outs were still restricted and its own payouts could be delayed while its wallet was refilled. Check your provider for current availability.</FactLine>
           <FactLine label="Software"><SourceLink href="https://github.com/ElementsProject/elements/releases/tag/elements-23.3.4">Elements 23.3.4</SourceLink> is the latest signed release and hardens the proof caches. A software release does not by itself restore the peg.</FactLine>
         </div>
       </div>
